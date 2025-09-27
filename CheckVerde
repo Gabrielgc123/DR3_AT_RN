@@ -1,0 +1,59 @@
+import React, { useRef, useEffect } from "react";
+import { View, Animated, Text, StyleSheet } from "react-native";
+
+export default function CheckAnimado() {
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Animated.View
+        style={[
+          styles.circle,
+          { transform: [{ scale: scaleAnim }] },
+        ]}
+      >
+        <Animated.Text style={[styles.check, { opacity: opacityAnim }]}>
+          ✔
+        </Animated.Text>
+      </Animated.View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  circle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "lightgreen",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  check: {
+    fontSize: 60,
+    color: "white",
+    fontWeight: "bold",
+  },
+});
