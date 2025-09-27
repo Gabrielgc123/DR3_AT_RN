@@ -1,0 +1,228 @@
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+
+export default function MapaScreen() {
+
+  const [contador, setContador] = useState(0);
+  const [abrirRestaurante, setAbrirRestaurante] = useState(false);
+
+  const restaurantes = [
+    {
+      nome: 'Churrascaria Palace',
+      latitude: -22.966699,
+      longitude: -43.178501,
+      tipo: 'Churrascaria / Carnes',
+      exemplos: ['Picanha na brasa', 'Costela bovina'],
+      endereco: 'R. Rodolfo Dantas, 16 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Canton',
+      latitude: -22.96721,
+      longitude: -43.18004,
+      tipo: 'Peruana e Chinesa',
+      exemplos: ['Arroz chaufa', 'Ceviche de peixe'],
+      endereco: 'R. Rodolfo Dantas, 26 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Restaurante Pérgula',
+      latitude: -22.96745,
+      longitude: -43.18059,
+      tipo: 'Internacional / Contemporânea',
+      exemplos: ['Risoto de camarão', 'Filé mignon ao molho de vinho'],
+      endereco: 'Av. Atlântica, 1702 - Copacabana (Copacabana Palace), Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Windsor Excelsior',
+      latitude: -22.96642,
+      longitude: -43.17793,
+      tipo: 'Brasileira / Internacional',
+      exemplos: ['Feijoada', 'Bacalhau à portuguesa'],
+      endereco: 'Av. Atlântica, 1800 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'La Trattoria',
+      latitude: -22.96733,
+      longitude: -43.18018,
+      tipo: 'Italiana',
+      exemplos: ['Spaghetti à bolonhesa', 'Lasanha de carne'],
+      endereco: 'R. Fernando Mendes, 7 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Brisa de Copa',
+      latitude: -22.9681,
+      longitude: -43.1794,
+      tipo: 'Frutos do Mar / Brasileira',
+      exemplos: ['Moqueca de peixe', 'Camarão à provençal'],
+      endereco: 'Av. Atlântica, 1914 - Copacabana (entre Posto 2 e 3), Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Aipo Aipim',
+      latitude: -22.9677,
+      longitude: -43.1789,
+      tipo: 'Comida Caseira / Brasileira',
+      exemplos: ['Escondidinho de carne seca', 'Purê de aipim'],
+      endereco: 'Av. Nossa Sra. de Copacabana, 605 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Mini Joe',
+      latitude: -22.9683,
+      longitude: -43.1809,
+      tipo: 'Lanches / Hamburgueria',
+      exemplos: ['Cheeseburger artesanal', 'Batata frita especial'],
+      endereco: 'Av. Nossa Sra. de Copacabana, 300 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Bunda De Fora',
+      latitude: -22.96795,
+      longitude: -43.1797,
+      tipo: 'Bar / Petiscos',
+      exemplos: ['Bolinho de bacalhau', 'Pastel de camarão'],
+      endereco: 'R. República do Peru, 212 - Copacabana, Rio de Janeiro - RJ',
+    },
+    {
+      nome: 'Restaurante do Tião',
+      latitude: -22.9686,
+      longitude: -43.1792,
+      tipo: 'Brasileira / Comida de Boteco',
+      exemplos: ['Filé de peixe frito', 'Calabresa acebolada'],
+      endereco: 'R. Carvalho de Mendonça, 13 - Loja E - Copacabana, Rio de Janeiro - RJ',
+    },
+  ];
+
+  return (
+    <View style={styles.container}>
+      {abrirRestaurante ? (
+        <>
+        <TouchableOpacity onPress={() => setAbrirRestaurante(false)} style={styles.btnVoltar}>
+        <Text style={styles.texto}></Text>
+        <Text style={styles.texto}>Voltar</Text>
+        <Text style={styles.texto}></Text>
+        </TouchableOpacity>
+          <Text style={styles.titulo}>{restaurantes[contador].nome}</Text>
+          <View style={styles.itemPedidoContainer}>
+            <Text style={styles.titulo}>
+              {restaurantes[contador].tipo}
+            </Text>
+          </View>
+          <View style={styles.itemPedidoContainer}>
+            <Text style={styles.texto}>
+              Prato 1: {restaurantes[contador].exemplos[0]}
+            </Text>
+            <Text style={styles.texto}>
+              Prato 2: {restaurantes[contador].exemplos[1]}
+            </Text>
+          </View>
+          <View style={styles.itemPedidoContainer}>
+            <Text style={styles.texto}>
+              Endereço: {restaurantes[contador].endereco}
+            </Text>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text style={styles.titulo}>Mapa</Text>
+          <View style={styles.btnsContainer}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => setContador(contador > 0 ? contador - 1 : 9)}>
+              <Text>Anterior</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btn, { flex: 2 }]}
+              onPress={() => setAbrirRestaurante(true)}>
+              <Text>{restaurantes[contador].nome}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => setContador(contador < 9 ? contador + 1 : 0)}>
+              <Text>Proximo</Text>
+            </TouchableOpacity>
+          </View>
+          <MapView
+            style={styles.mapa}
+            region={{
+              latitude: restaurantes[contador].latitude,
+              longitude: restaurantes[contador].longitude,
+              latitudeDelta: 0.001,
+              longitudeDelta: 0.001,
+            }}>
+            {restaurantes.map((elemento, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: elemento.latitude,
+                  longitude: elemento.longitude,
+                }}
+                title={elemento.nome}
+              />
+            ))}
+          </MapView>
+        </>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'lightgrey',
+    paddingTop: 20,
+  },
+  titulo: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: 'black',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  mapa: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.7,
+    borderRadius: 12,
+  },
+  btnsContainer: {
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  btn: {
+    backgroundColor: '#4287f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 20,
+    flex: 1,
+  },
+  itemPedidoContainer: {
+    backgroundColor: 'white',
+    padding: 15,
+    marginBottom: 12,
+    borderRadius: 20,
+    marginHorizontal: 15,
+  },
+  texto: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: 'black',
+  },
+   btnVoltar: {
+    marginHorizontal: 15,
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+});
