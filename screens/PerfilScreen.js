@@ -1,0 +1,98 @@
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function PerfilScreen() {
+  const [tema, setTema] = useState('claro');
+
+  useEffect(() => {
+    const carregarTema = async () => {
+      try {
+        const valor = await AsyncStorage.getItem('tema');
+        if (valor) {
+          setTema(valor);
+        } else {
+          await AsyncStorage.setItem('tema', 'claro');
+        }
+      } catch (e) {
+        console.log('Erro ao carregar tema:', e);
+      }
+    };
+    carregarTema();
+  }, []);
+
+  const mudarTema = async (novoTema) => {
+    try {
+      setTema(novoTema);
+      await AsyncStorage.setItem('tema', novoTema);
+    } catch (error) {
+      console.log('Erro ao salvar tema:', error);
+    }
+  };
+
+  const usuario = {
+    nome: 'Cleiton',
+    email: 'CleitonSpartano@example.com',
+    foto: require('../assets/kratos.png'),
+  };
+
+  return (
+    <View style={[styles.container, { backgroundColor: tema === 'escuro' ? 'black' : 'lightgray' }]}>
+      <Image source={usuario.foto} style={styles.img} />
+      <Text style={[styles.nome, { color: tema === 'escuro' ? 'white' : 'black' }]}>{usuario.nome}</Text>
+      <Text style={[styles.email, { color: tema === 'escuro' ? 'white' : 'black' }]}>{usuario.email}</Text>
+      <TouchableOpacity
+        style={[styles.btn, { backgroundColor: tema === 'escuro' ? 'white' : 'blue' }]}
+        onPress={() => mudarTema('claro')}
+      >
+        <Text style={[styles.nome, { color: tema === 'escuro' ? 'black' : 'white' }]}>Claro</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.btn, { backgroundColor: tema === 'escuro' ? 'blue' : 'white' }]}
+        onPress={() => mudarTema('escuro')}
+      >
+        <Text style={[styles.nome, { color: tema === 'escuro' ? 'white' : 'black' }]}>Escuro</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightgray',
+    padding: 20,
+  },
+  img: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#4287f5',
+  },
+  nome: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: 'black',
+    marginBottom: 5,
+  },
+  email: {
+    fontSize: 16,
+    color: 'black',
+  },
+  btn: {
+    marginHorizontal: 5,
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 10,
+    flexDirection: 'row',
+    width: '100%'
+  },
+});
